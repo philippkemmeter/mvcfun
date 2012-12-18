@@ -3,7 +3,7 @@
 var Http = require('http'),
     HTTPStatusCodes = require('./lib/HTTPStatusCodes.js'),
     util = require('util'),
-    url = require('url');
+    url = require('url'),
     fs = require('fs'),
     path = require('path'),
     API = require('./lib/API.js'),
@@ -11,7 +11,7 @@ var Http = require('http'),
     Config = require('./lib/Config.js'),
     Mime = require('./lib/Mime.js'),
     LogClient = require('./lib/LogClient.js'),
-    RespMan = require('./lib/response/Manager.js');
+    RespMan = require('./lib/response/Manager.js'),
     ReqMan = require('./lib/request/Manager.js');
 
 require('sesh').magicSession();
