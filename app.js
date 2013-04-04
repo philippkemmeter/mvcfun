@@ -86,8 +86,6 @@ App.server = Http.createServer(function(req, resp) {
             App.req_manager.run(command, req.method, GET, resp);
         }
     } catch(e) {
-    throw e;
-
         console.log(e);
 
         try {
