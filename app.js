@@ -7,7 +7,7 @@ var Http = require('http'),
     fs = require('fs'),
     path = require('path'),
     API = require('./lib/API.js'),
-    FW = require('./lib/FW/'),
+    FW = require('philfw'),
     Config = require('./lib/Config.js'),
     Mime = require('./lib/Mime.js'),
     LogClient = require('./lib/LogClient.js'),
@@ -49,6 +49,7 @@ App.server = Http.createServer(function(req, resp) {
         // req.session bereitgestellt.
 
         var command = FW.ltrim(req.url.split('?')[0], '/');
+        var get_params = url.parse(req.url, true).query || {};
 
         App.req_manager.setSession(req.session);
 
