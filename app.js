@@ -6,9 +6,7 @@ var Http = require('http'),
     url = require('url'),
     fs = require('fs'),
     path = require('path'),
-    API = require('./lib/API.js'),
     FW = require('philfw'),
-    Config = require('./lib/Config.js'),
     Mime = require('./lib/Mime.js'),
     LogClient = require('./lib/LogClient.js'),
     RespMan = require('./lib/response/Manager.js'),
@@ -17,9 +15,8 @@ var Http = require('http'),
 require('sesh').magicSession();
 
 var App = {};
-App.DAL = {};
 
-App.log_client = new LogClient(Config.LOG_CLIENT_IP, Config.LOG_CLIENT_PORT);
+App.log_client = new LogClient('127.0.0.1', 8090);
 App.log_client.on('error', function(e) { console.log(e) });
 App.log = function(msg) {
     console.log(msg);
@@ -42,12 +39,6 @@ App.req_manager = new ReqMan(
 
 App.server = Http.createServer(function(req, resp) {
     try {
-
-        // Wir erwarten Anfragen in der Form /COMMAND?param1=value1&....
-        // Durch die magicSession wird SID=... als Session-ID angenommen und
-        // die entsprechende Session, falls existent - sonst eine neue -, in
-        // req.session bereitgestellt.
-
         var command = FW.ltrim(req.url.split('?')[0], '/');
         var get_params = url.parse(req.url, true).query || {};
 
@@ -96,6 +87,6 @@ App.server = Http.createServer(function(req, resp) {
         }
         App.resp_manager.writeInternalServerError(resp, e);
     }
-}).listen(Config.SERVER_PORT);
+}).listen(8080);
 
-console.log('listening on http://localhost:' + Config.SERVER_PORT + '/');
+console.log('listening on http://localhost:' + 8080 + '/');

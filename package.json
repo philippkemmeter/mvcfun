@@ -1,0 +1,27 @@
+{
+  "name": "mvcfun",
+  "version": "0.1.1",
+  "description": "MVC based web server framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/philippkemmeter/mvcfun"
+  },
+  "keywords": [
+    "framework",
+    "tiny"
+  ],
+  "author": "Philipp Kemmeter <phil.kemmeter@gmail.com>",
+  "license": "BSD",
+  "gitHead": "545d424c370ae652d5f7dc552d4a8adfd5739cda",
+  "dependencies": {
+    "valuechecker": "*",
+    "underscore"  : "*"
+  },
+  "devDependencies": {
+      "mocha": "*"
+  }
+}

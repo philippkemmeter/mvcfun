@@ -1,16 +1,30 @@
-mvc-fun
-=======
+# MVCfun
 
-An mvc based framework for creating huge application servers with fun.
+MVCfun is an model-view-controller based web server framework. 
 
-Whereas basic webserver features are included, this framework is more about giving a development structure following the mvc pattern thn providing features like express does. You can, however, use express on top of it to create a webserver using the mvc-pattern and/or any template engine.
+Register controllers to ressource paths. You may use regular expressions for
+this to register a controller to a bunch of paths at once.
 
-For simple projects the provided features of mvc-fun should be enough.
+This project is under high development and new features pop out every week.
+Contributers are very welcome.
 
-features
---------
+## Quick example
 
-- Full MVC structure given in a cool way.
-- POST parameters as well as query string parsing directly included.
-- RESTful services included.
-- Simply extendable with other standard frameworks around.
+    var mvcfun     = require('mvcfun'),
+        controller = mvcfun.controller,
+        regexp     = mvcfun.regexp;
+
+    var server = (new mvcfun.http.Server())
+        .listen(8080)
+        .on('error', function(err) {
+            console.log(err.stack);
+            server.close(function() { process.exit(1) });
+        });
+
+    server.addController(new controller.Static(regexp.files));
+    server.addController(new controller.Forbidden(regexp.directories));
+
+This creates an http server listening on port 8080. It serves all static files
+located relatively to the default directory 'htdocs' and forbid any access to
+directories.
+
