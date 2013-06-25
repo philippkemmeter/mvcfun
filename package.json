@@ -1,6 +1,6 @@
 {
   "name": "mvcfun",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "MVC based web server framework",
   "main": "index.js",
   "scripts": {
