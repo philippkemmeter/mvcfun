@@ -23,6 +23,7 @@
     "swig"        : "*"
   },
   "devDependencies": {
-      "mocha": "*"
+      "mocha": "*",
+      "should": "*"
   }
 }
