@@ -28,3 +28,8 @@ This creates an http server listening on port 8080. It serves all static files
 located relatively to the default directory 'htdocs' and forbid any access to
 directories.
 
+## Key features
+
+    - MVC based developing the cool way
+    - High unit test coverage
+    - RESTFul developing possible in same framework
