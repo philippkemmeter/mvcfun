@@ -19,7 +19,7 @@
   "gitHead": "545d424c370ae652d5f7dc552d4a8adfd5739cda",
   "dependencies": {
     "valuechecker": "*",
-    "nepp":         "*"
+    "nepp":         "*",
     "underscore":   "*",
     "swig":         "*"
   },
