@@ -1,6 +1,6 @@
 {
   "name": "mvcfun",
-  "version": "0.1.4",
+  "version": "0.1.4-r2",
   "description": "MVC based web server framework",
   "main": "index.js",
   "scripts": {
@@ -19,8 +19,9 @@
   "gitHead": "545d424c370ae652d5f7dc552d4a8adfd5739cda",
   "dependencies": {
     "valuechecker": "*",
-    "underscore"  : "*",
-    "swig"        : "*"
+    "nepp":         "*"
+    "underscore":   "*",
+    "swig":         "*"
   },
   "devDependencies": {
       "mocha": "*",
