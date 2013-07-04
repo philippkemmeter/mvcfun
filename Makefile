@@ -23,7 +23,7 @@ docs: $(SRCDIR) docs/readme.html
 	doxx --source lib --target docs
 
 docs/readme.html: README.md
-	markdown_py README.md > docs/readme.html
+	peg-markdown README.md > docs/readme.html
 
 cleanall: cleancov cleandocs
 
