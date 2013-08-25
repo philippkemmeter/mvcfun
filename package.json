@@ -20,7 +20,7 @@
   "dependencies": {
     "valuechecker": "*",
     "underscore"  : "*",
-    "swig"        : "*"
+    "swig"        : "0.14.0"
   },
   "devDependencies": {
       "mocha": "*",
