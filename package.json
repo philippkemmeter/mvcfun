@@ -21,7 +21,9 @@
     "valuechecker": "*",
     "nepp":         "*",
     "underscore":   "*",
-    "swig":         "0.14.0"
+    "swig":         "0.14.0",
+    "sesh":         "*",
+    "eyes":         "*"
   },
   "devDependencies": {
       "mocha": "*",
