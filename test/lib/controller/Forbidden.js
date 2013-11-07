@@ -22,66 +22,59 @@ describe('controller.Forbidden', function() {
     //
     describe('#run', function() {
         var methods = mvcfun.http.Server.METHODS;
+        var languages = ['', 'en', 'de'];
 
         for (var i = 0; i < methods.length; ++i) {
-            it(
-                'should return 403 if alwaysForbidden is set ['+methods[i]+']',
-                (function(method) {
-                    return function(done) {
-                        var httpresp = new http.ServerResponse({method:method});
-                        httpresp.end = function(content) {
-                            this.should.have.status(403);
-                            done();
-                        }
-
-                        var ctrl = new mvcfun.controller.Forbidden(
-                            '/filename', {alwaysForbidden: true}
-                        );
-                        reqCtrl.addController(ctrl);
-
-                        ctrl.run(method, httpresp, '/filename');
-                    }
-                })(methods[i])
-            );
-        }
-        for (var i = 0; i < methods.length; ++i) {
-            it(
-                'should return 404 if NOT alwaysForbidden and file not found ['
-                +methods[i]+']',
-                (function(method) {
-                    return function(done) {
-                        var httpresp = new http.ServerResponse({method:method});
-                        httpresp.end = function(content) {
-                            this.should.have.status(404);
-                            done();
-                        }
-
-                        var ctrl = new mvcfun.controller.Forbidden(
-                            '/filename',
-                            {alwaysForbidden: false, htdocsDir: os.tmpdir()}
-                        );
-                        reqCtrl.addController(ctrl);
-
-                        ctrl.run(method, httpresp, '/filename');
-                    }
-                })(methods[i])
-            );
-        }
-        var tmpfile = os.tmpdir() + '/filename';
-        after(function() { fs.unlinkSync(tmpfile) });
-        for (var i = 0; i < methods.length; ++i) {
-            it(
-                'should return 403 if NOT alwaysForbidden and file exists ['
-                +methods[i]+']',
-                (function(method) {
-                    return function(done) {
-                        fs.writeFile(tmpfile, 'lala', function(err) {
-                            if (err) done(err);
+            for (var l = 0; l < languages.length; ++l) {
+                it(
+                    'should return 403 if alwaysForbidden is set ['
+                        +methods[i]+', ' + languages[l] + ']',
+                    (function(method, language) {
+                        return function(done) {
                             var httpresp = new http.ServerResponse(
                                 {method: method}
                             );
                             httpresp.end = function(content) {
                                 this.should.have.status(403);
+                                if (!language) {
+                                    this._header.indexOf('Content-Language')
+                                        .should.be.equal(-1);
+                                } else {
+                                    this._header.indexOf('Content-Language: '
+                                        + language).should.be.above(-1);
+                                }
+                                done();
+                            }
+
+                            var ctrl = new mvcfun.controller.Forbidden(
+                                '/filename', {alwaysForbidden: true}
+                            );
+                            reqCtrl.addController(ctrl);
+                            ctrl.language = language;
+
+                            ctrl.run(method, httpresp, '/filename');
+                        }
+                    })(methods[i], languages[l])
+                );
+            }
+        }
+        for (var i = 0; i < methods.length; ++i) {
+            for (var l = 0; l < languages.length; ++l) {
+                it(
+                    'should return 404 if NOT alwaysForbidden and file not '
+                    + 'found [' + methods[i] + ', ' + languages[l] + ']',
+                    (function(method, language) {
+                        return function(done) {
+                            var httpresp = new http.ServerResponse({method:method});
+                            httpresp.end = function(content) {
+                                this.should.have.status(404);
+                                if (!language) {
+                                    this._header.indexOf('Content-Language')
+                                        .should.be.equal(-1);
+                                } else {
+                                    this._header.indexOf('Content-Language: '
+                                        + language).should.be.above(-1);
+                                }
                                 done();
                             }
 
@@ -90,12 +83,54 @@ describe('controller.Forbidden', function() {
                                 {alwaysForbidden: false, htdocsDir: os.tmpdir()}
                             );
                             reqCtrl.addController(ctrl);
+                            ctrl.language = language;
 
                             ctrl.run(method, httpresp, '/filename');
-                        });
-                    }
-                })(methods[i])
-            );
+                        }
+                    })(methods[i], languages[l])
+                );
+            }
+        }
+        var tmpfile = os.tmpdir() + '/filename';
+        after(function() { fs.unlinkSync(tmpfile) });
+        for (var i = 0; i < methods.length; ++i) {
+            for (var l = 0; l < languages.length; ++l) {
+                it(
+                    'should return 403 if NOT alwaysForbidden and file exists ['
+                        +methods[i]+', ' + languages[l] + ']',
+                    (function(method, language) {
+                        return function(done) {
+                            fs.writeFile(tmpfile, 'lala', function(err) {
+                                if (err) done(err);
+                                var httpresp = new http.ServerResponse(
+                                    {method: method}
+                                );
+                                httpresp.end = function(content) {
+                                    this.should.have.status(403);
+                                    if (!language) {
+                                        this._header.indexOf('Content-Language')
+                                            .should.be.equal(-1);
+                                    } else {
+                                        this._header.indexOf(
+                                            'Content-Language: ' + language
+                                        ).should.be.above(-1);
+                                    }
+                                    done();
+                                }
+
+                                var ctrl = new mvcfun.controller.Forbidden(
+                                    '/filename',
+                                    {alwaysForbidden: false, htdocsDir: os.tmpdir()}
+                                );
+                                reqCtrl.addController(ctrl);
+                                ctrl.language = language;
+
+                                ctrl.run(method, httpresp, '/filename');
+                            });
+                        }
+                    })(methods[i], languages[l])
+                );
+            }
         }
     });
 });

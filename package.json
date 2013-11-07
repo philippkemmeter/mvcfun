@@ -1,6 +1,6 @@
 {
   "name": "mvcfun",
-  "version": "0.1.1",
+  "version": "0.1.5",
   "description": "MVC based web server framework",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,9 @@
   "dependencies": {
     "valuechecker": "*",
     "underscore"  : "*",
-    "swig"        : "0.14.0"
+    "swig"        : "0.14.0",
+    "nepp":         "*",
+    "sesh":         "*"
   },
   "devDependencies": {
       "mocha": "*",
