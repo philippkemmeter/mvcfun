@@ -40,6 +40,7 @@ pattern makes code more readable and maintable without loosing performance.
     - Increadibly fast
     - RESTFul developing possible in same framework
     - Swig template engine included
+    - Multi-language page support (including SEO features)
     - High unit test coverage
 
 ## Installation
