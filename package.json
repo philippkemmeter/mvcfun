@@ -22,8 +22,7 @@
     "nepp":         "*",
     "underscore":   "*",
     "swig":         "0.14.0",
-    "sesh":         "*",
-    "eyes":         "*"
+    "sesh":         "*"
   },
   "devDependencies": {
       "mocha": "*",
