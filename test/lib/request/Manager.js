@@ -12,31 +12,6 @@ var mvcfun = require('../../../'),
 describe('request.Manager', function() {
     var respMan = new mvcfun.response.Manager();
 
-    describe('#setQueryAndBody', function() {
-        var reqMan = new mvcfun.request.Manager(
-            respMan,
-            new mvcfun.request.Controller()
-        );
-        it('should set properly', function() {
-            var query = {lala: 'ulu'};
-            var body = {cool: 'object'};
-            var rawBody = 'cool object';
-            reqMan.setQueryAndBody(query, body, rawBody);
-            reqMan.query.should.equal(query);
-            reqMan.body.should.equal(body);
-            reqMan.rawBody.should.equal(rawBody);
-        });
-        it('should work properly with empty arguments', function() {
-            var query = {};
-            var body = {};
-            var rawBody = '';
-            reqMan.setQueryAndBody(query, body, rawBody);
-            reqMan.query.should.equal(query);
-            reqMan.body.should.equal(body);
-            reqMan.rawBody.should.equal(rawBody);
-        });
-    });
-
     //
     // Tests request.Manager.run
     //
