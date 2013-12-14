@@ -65,7 +65,7 @@ easily. This is one main feature of MVCFun.
     };
     util.inherits(HelloWorldController, controller.Base);
 
-    HelloWorldController.prototype.run = function(method, resp, path) {
+    HelloWorldController.prototype.run = function(resp, path) {
         this.responseManager.writeText(resp,'Hello World!');
     };
 
