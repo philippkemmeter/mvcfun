@@ -16,6 +16,9 @@ describe('controller.Base', function() {
         new mvcfun.request.Controller()
     );
     var reqCtrl = reqMan.requestController;
+    reqMan._requestData = new mvcfun.request.Data(
+        new http.IncomingMessage(), ''
+    );
     //
     // Tests the run method
     //

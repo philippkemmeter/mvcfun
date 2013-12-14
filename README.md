@@ -36,12 +36,49 @@ pattern makes code more readable and maintable without loosing performance.
 ## Key features
 
     - MVC based developing the cool way
+    - Easy controller handling
     - Maintainable code
     - Increadibly fast
     - RESTFul developing possible in same framework
     - Swig template engine included
     - Multi-language page support (including SEO features)
     - High unit test coverage
+
+## Custom Controller
+
+The main idea of MVCFun is to design your web project based on model, views and
+controllers. The key part are the controllers, because they connect the models
+with the views.
+
+Therefore it's absolutely necessary to be able to create custom controllers very
+easily. This is one main feature of MVCFun.
+
+    // The Hello World
+
+    var mvcfun     = require('mvcfun'),
+        controller = mvcfun.controller,
+        util       = require('util'),
+        regexp     = mvcfun.regexp;
+
+    var HelloWorldController = function(filename) {
+        controller.Base.call(this, filename);
+    };
+    util.inherits(HelloWorldController, controller.Base);
+
+    HelloWorldController.prototype.run = function(method, resp, path) {
+        this.responseManager.writeText(resp,'Hello World!');
+    };
+
+    var server = (new mvcfun.http.Server()).listen(8080);
+    server.addController(new HelloWorldController('/helloworld'));
+
+If you run this example and surfs at "localhost:8080/helloworld" you will read
+"Hello World!" as plain text response.
+
+For sure, the controllers should be organized in seperate files (one per
+controller). The controller can easily require any class to connect to them
+(models) and use any kind of template engine to create the view. There is build
+in swig support.
 
 ## Installation
 
