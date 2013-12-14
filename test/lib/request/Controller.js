@@ -103,99 +103,77 @@ describe('request.Controller', function() {
     // Tests request.Controller.run
     //
     describe('#run', function() {
-        var methods = mvcfun.http.Server.METHODS;
+        it('should run an existing controller properly', function(done) {
+            var myCtrl = new mvcfun.controller.Base('/x.file');
+            myCtrl.run = function(resp, path) {
+                resp.writeHead(
+                    mvcfun.http.StatusCodes.OK,
+                    {'Content-Type': 'text/plain'}
+                );
+                resp.end('Hallo Welt');
+            };
 
-        for (var i = 0; i < methods.length; ++i) {
-            it(
-                'should run an existing controller properly ['+methods[i]+']',
-                (function(method) {
-                    return function(done) {
-                        var myCtrl = new mvcfun.controller.Base('/x.file');
-                        myCtrl.run = function(method, resp, path) {
-                            resp.writeHead(
-                                mvcfun.http.StatusCodes.OK,
-                                {'Content-Type': 'text/plain'}
-                            );
-                            resp.end('Hallo Welt');
-                        };
+            var resp = new http.ServerResponse({GET: 'GET'});
 
-                        var resp = new http.ServerResponse({method: method});
+            resp.end = function(content) {
+                content.should.equal('Hallo Welt');
+                this.should.have.status(mvcfun.http.StatusCodes.OK);
+                done();
+            };
 
-                        resp.end = function(content) {
-                            content.should.equal('Hallo Welt');
-                            this.should.have.status(mvcfun.http.StatusCodes.OK);
-                            done();
-                        };
+            reqCtrl.addController(myCtrl);
+            reqCtrl.run(resp, '/x.file');
+        });
+        it('should output 404 if controller does not exist on run',
+            function(done) {
+                var resp = new http.ServerResponse({'GET': 'GET'});
 
-                        reqCtrl.addController(myCtrl);
-                        reqCtrl.run('/x.file', method, resp);
-                    };
-                })(methods[i])
-            );
-            it(
-               'should output 404 if controller does not exist on run ['
-                +methods[i]+']',
-                (function(method) {
-                    return function(done) {
-                        var resp = new http.ServerResponse({method: method});
+                resp.end = function(content) {
+                    this.should.have.status(
+                        mvcfun.http.StatusCodes.NOT_FOUND
+                    );
+                    done();
+                };
 
-                        resp.end = function(content) {
-                            this.should.have.status(
-                                mvcfun.http.StatusCodes.NOT_FOUND
-                            );
-                            done();
-                        };
+                reqCtrl.run(resp, '/y.file');
+            }
+        );
+        it('should call the last added controller on regexp overlap',
+            function(done) {
+                var ctrl1 = new mvcfun.controller.Base(/a/);
+                ctrl1.run = function(resp, path) {
+                    done('Must not be called!');
+                };
+                var ctrl2 = new mvcfun.controller.Base(/ab/);
+                ctrl2.run = function(resp, path) {
+                    done();
+                };
+                var resp = new http.ServerResponse({'GET': 'GET'});
+                reqCtrl.addController(ctrl1);
+                reqCtrl.addController(ctrl2);
+                reqCtrl.run(resp, '/ababaa');
+            }
+        );
+        it('should emit error if controller throws', function(done) {
+            var myCtrl = new mvcfun.controller.Base('/z.file');
+            myCtrl.run = function(resp, path) {
+                throw new Error('This should be emitted');
+            };
+            var Resp = function(){};
+            util.inherits(Resp, http.ServerResponse);
 
-                        reqCtrl.run('/y.file', method, resp);
-                   };
-                })(methods[i])
-            );
-            it(
-                'should call the last added controller on regexp overlap['
-                    + methods[i] + ']',
-                (function(method) {
-                    return function(done) {
-                        var ctrl1 = new mvcfun.controller.Base(/a/);
-                        ctrl1.run = function(method, resp, path) {
-                            done('Must not be called!');
-                        };
-                        var ctrl2 = new mvcfun.controller.Base(/ab/);
-                        ctrl2.run = function(method, resp, path) {
-                            done();
-                        };
-                        var resp = new http.ServerResponse({method: method});
-                        reqCtrl.addController(ctrl1);
-                        reqCtrl.addController(ctrl2);
-                        reqCtrl.run('/ababaa', method, resp);
-                    };
-                })(methods[i])
-            );
-            it(
-                'should emit error if controller throws [' + methods[i] + ']',
-                (function(method) {
-                    return function(done) {
-                        var myCtrl = new mvcfun.controller.Base('/z.file');
-                        myCtrl.run = function(method, resp, path) {
-                            throw new Error('This should be emitted');
-                        };
-                        var Resp = function(){};
-                        util.inherits(Resp, http.ServerResponse);
+            var reqCtrl = new mvcfun.request.Controller();
+            reqCtrl._requestManager = reqMan;
 
-                        var reqCtrl = new mvcfun.request.Controller();
-                        reqCtrl._requestManager = reqMan;
-
-                        reqCtrl.on('error', function(err) {
-                            String(err).should.equal(
-                                'Error: This should be emitted'
-                            );
-                            done();
-                        });
-                        reqCtrl.addController(myCtrl);
-                        reqCtrl.run('/z.file', method, new Resp());
-                        reqCtrl.removeController('/z.file').should.be.true;
-                    };
-                })(methods[i])
-            );
-        }
+            reqCtrl.on('error', function(err) {
+                String(err).should.equal(
+                    'Error: This should be emitted'
+                );
+                done();
+            });
+            reqCtrl.addController(myCtrl);
+            reqCtrl.run(new Resp(), '/z.file');
+            reqCtrl.removeController('/z.file').should.be.true;
+        });
     });
 });
