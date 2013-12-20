@@ -44,8 +44,6 @@ describe('controller.Forbidden', function() {
                             done();
                         }
 
-                        reqMan._requestData = {path: '/filename'};
-
                         var ctrl = new mvcfun.controller.Forbidden(
                             '/filename', {alwaysForbidden: true}
                         );
