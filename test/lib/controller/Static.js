@@ -56,13 +56,13 @@ describe('controller.Static', function() {
                                 mvcfun.regexp.files,
                                 {htdocsDir: os.tmpdir()}
                             );
-                            var req = new http.IncomingMessage();
-                            req.method = 'GET';
                             ctrl.language = language;
                             reqCtrl.addController(ctrl);
-                            reqCtrl.requestManager._requestData
-                                = new mvcfun.request.Data(req, '');
-                            ctrl.run(resp, '/1');
+                            reqMan._requestData = {
+                                path: '/1',
+                                method: 'GET'
+                            }
+                            reqCtrl.run(resp, ctrl);
                         });
                     }
                 })(languages[l])
@@ -106,13 +106,13 @@ describe('controller.Static', function() {
                                     mvcfun.regexp.files,
                                     {htdocsDir: os.tmpdir()}
                                 );
-                                var req = new http.IncomingMessage();
-                                req.method = method;
                                 ctrl.language = language;
                                 reqCtrl.addController(ctrl);
-                                reqCtrl.requestManager._requestData
-                                    = new mvcfun.request.Data(req, '');
-                                ctrl.run(resp, '/1');
+                                reqMan._requestData = {
+                                    path: '/1',
+                                    method: method
+                                }
+                                reqCtrl.run(resp, ctrl);
                             });
                         }
                     })(disallowed_methods[i], languages[l])
