@@ -29,9 +29,12 @@ describe('controller.Redirect', function() {
                         this.should.have.status(status);
                         this._header.indexOf('HTTP/1.1 ' + status)
                             .should.equal(0);
+                        this._header.indexOf('Location: www.example.org')
+                            .should.be.above(0);
                         done();
                     };
 
+                    reqMan._requestData = {path: '/filename'};
                     var ctrl = new mvcfun.controller.Redirect(
                         '/filename', 'www.example.org', {status: status}
                     );
@@ -40,5 +43,24 @@ describe('controller.Redirect', function() {
                 }
             })(statuses[i]));
         }
+
+        it('should respect addPath and status default', function(done) {
+            var httpresp = new http.ServerResponse({GET: 'GET'});
+            httpresp.end = function(content) {
+                this.should.have.status(301);
+                this._header.indexOf('HTTP/1.1 301')
+                    .should.equal(0);
+                this._header.indexOf('Location: www.example.org/filename')
+                    .should.be.above(0);
+                done();
+            };
+
+            reqMan._requestData = {path: '/filename'};
+            var ctrl = new mvcfun.controller.Redirect(
+                '/filename', 'www.example.org', {addPath: true}
+            );
+            reqCtrl.addController(ctrl);
+            reqCtrl.run(httpresp, ctrl);
+        });
     });
 });
