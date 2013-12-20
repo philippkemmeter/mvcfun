@@ -25,8 +25,7 @@ describe('request.Manager', function() {
                     mvcfun.request.Controller.call(this);
                 };
                 util.inherits(ReqCtrlMock, mvcfun.request.Controller);
-                ReqCtrlMock.prototype.run = function(resp, f) {
-                    f.should.equal(filename);
+                ReqCtrlMock.prototype.run = function(resp) {
                     resp.should.equal(httpresp);
                     done();
                 };
@@ -38,6 +37,7 @@ describe('request.Manager', function() {
                 var reqMan  = new mvcfun.request.Manager(
                     respMan, reqCtrl
                 );
+                reqMan._requestData = {host: 'example.org', port:80};
                 reqMan.run(httpresp, filename);
             }
         );
@@ -65,6 +65,7 @@ describe('request.Manager', function() {
                 var reqMan = new mvcfun.request.Manager(
                     respMan, reqCtrl
                 );
+                reqMan._requestData = {host: 'example.org', port:80};
                 reqMan.run(httpresp, 'not_registerd_file');
             }
         );

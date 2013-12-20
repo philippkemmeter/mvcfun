@@ -31,7 +31,7 @@ describe('controller.Base', function() {
             };
             var ctrl = new mvcfun.controller.Base('/langtest');
             reqCtrl.addController(ctrl);
-            ctrl.run(resp, '/1');
+            reqCtrl.run(resp, ctrl);
         });
         it('should send the correct Content-Language header', function(done) {
             var resp = new http.ServerResponse({GET:'GET'});
@@ -43,7 +43,7 @@ describe('controller.Base', function() {
             var ctrl = new mvcfun.controller.Base('/langtest');
             ctrl.language = 'en';
             reqCtrl.addController(ctrl);
-            ctrl.run(resp, '/1');
+            reqCtrl.run(resp, ctrl);
         });
     })
 });
