@@ -44,13 +44,15 @@ describe('controller.Forbidden', function() {
                             done();
                         }
 
+                        reqMan._requestData = {path: '/filename'};
+
                         var ctrl = new mvcfun.controller.Forbidden(
                             '/filename', {alwaysForbidden: true}
                         );
                         reqCtrl.addController(ctrl);
                         ctrl.language = language;
 
-                        ctrl.run(httpresp, '/filename');
+                        reqCtrl.run(httpresp, ctrl);
                     }
                 })(languages[l])
             );
@@ -74,6 +76,7 @@ describe('controller.Forbidden', function() {
                             done();
                         }
 
+                        reqMan._requestData = {path: '/filename'};
                         var ctrl = new mvcfun.controller.Forbidden(
                             '/filename',
                             {alwaysForbidden: false, htdocsDir: os.tmpdir()}
@@ -81,7 +84,7 @@ describe('controller.Forbidden', function() {
                         reqCtrl.addController(ctrl);
                         ctrl.language = language;
 
-                        ctrl.run(httpresp, '/filename');
+                        reqCtrl.run(httpresp, ctrl);
                     }
                 })(languages[l])
             );
@@ -112,14 +115,14 @@ describe('controller.Forbidden', function() {
                                 done();
                             }
 
+                            reqMan._requestData = {path: '/filename'}
                             var ctrl = new mvcfun.controller.Forbidden(
                                 '/filename',
                                 {alwaysForbidden: false, htdocsDir: os.tmpdir()}
                             );
                             reqCtrl.addController(ctrl);
                             ctrl.language = language;
-
-                            ctrl.run(httpresp, '/filename');
+                            reqCtrl.run(httpresp, ctrl);
                         });
                     }
                 })(languages[l])

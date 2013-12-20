@@ -20,35 +20,184 @@ describe('request.Controller', function() {
     // Tests request.Controller.addController
     //
     describe('#addController', function() {
-        it(
-            'should add a controller for a string filename',
-            function() {
-                var ctrl = new mvcfun.controller.Base('/filename.html');
-                reqCtrl.addController(ctrl);
-                reqCtrl.getController('/filename.html')
-                    .should.equal(ctrl);
-            }
-        );
-        it(
-            'should add a controller for a regexp filename',
-            function() {
-                var ctrl = new mvcfun.controller.Base(/huhu/i);
-                reqCtrl.addController(ctrl);
-                reqCtrl.getController('/huhu.html')
-                    .should.equal(ctrl);
-                reqCtrl.getController('huHu.o')
-                    .should.equal(ctrl);
-                reqCtrl.getController('/jh/HUHU')
-                    .should.equal(ctrl);
-            }
-       );
+        var cases = [
+            [   // 0
+                ['/filename.html', undefined, undefined],
+                ['www.example.org', 80, '/filename.html'],
+                true
+            ],
+            [   // 1
+                ['/filename.html', undefined, undefined],
+                ['anyany', 88930 /*any*/, '/filename.html'],
+                true
+            ],
+            [
+                ['/filename.html', undefined, undefined],
+                ['anyany', 80, '/wrong.html'],
+                false
+            ],
+
+            [
+                ['/filename.html', 'www.example.org', undefined],
+                ['www.example.org', 80, '/filename.html'],
+                true
+            ],
+            [
+                ['/filename.html', 'www.example.org', undefined],
+                ['www.example.org', 8028 /*any*/, '/filename.html'],
+                true
+            ],
+            [   // 5
+                ['/filename.html', 'www.example.org', undefined],
+                ['wrong.org', 80, '/filename.html'],
+                false
+            ],
+            [
+                ['/filename.html', 'www.example.org', undefined],
+                ['www.example.org', 80, '/wrong.html'],
+                false
+            ],
+
+            [
+                ['/filename.html', 'www.example.org', 8080],
+                ['www.example.org', 8080, '/filename.html'],
+                true
+            ],
+            [
+                ['/filename.html', 'www.example.org', 8080],
+                ['wrong.org', 8080, '/filename.html'],
+                false
+            ],
+            [
+                ['/filename.html', 'www.example.org', 8080],
+                ['www.example.org', 80 /*wrong*/, '/filename.html'],
+                false
+            ],
+            [   // 10
+                ['/filename.html', 'www.example.org', 8080],
+                ['www.example.org', 8080, '/wrong.html'],
+                false
+            ],
+
+            [
+                [/name\.html$/i, undefined, undefined],
+                ['www.example.org', 80, '/filenAmE.html'],
+                true
+            ],
+            [
+                [/name\.html$/i, undefined, undefined],
+                ['anyany', 88930 /*any*/, '/filename.html'],
+                true
+            ],
+            [
+                [/name\.html$/i, undefined, undefined],
+                ['anyany', 80, '/wrong.html'],
+                false
+            ],
+
+            [
+                [/name\.html$/i, 'www.example.org', undefined],
+                ['www.example.org', 80, '/filename.html'],
+                true
+            ],
+            [   // 15
+                [/name\.html$/i, 'www.example.org', undefined],
+                ['www.example.org', 8028 /*any*/, '/filename.html'],
+                true
+            ],
+            [
+                [/name\.html$/i, 'www.example.org', undefined],
+                ['wrong.org', 80, '/filename.html'],
+                false
+            ],
+            [
+                [/name\.html$/i, 'www.example.org', undefined],
+                ['www.example.org', 80, '/wrong.html'],
+                false
+            ],
+
+            [
+                [/name\.html$/i, 'www.example.org', 8080],
+                ['www.example.org', 8080, '/filename.html'],
+                true
+            ],
+            [
+                [/name\.html$/i, 'www.example.org', 8080],
+                ['wrong.org', 8080, '/filename.html'],
+                false
+            ],
+            [   // 20
+                [/name\.html$/i, 'www.example.org', 8080],
+                ['www.example.org', 80 /*wrong*/, '/filename.html'],
+                false
+            ],
+            [
+                [/name\.html$/i, 'www.example.org', 8080],
+                ['www.example.org', 8080, '/wrong.html'],
+                false
+            ],
+
+            [
+                [/name\.html$/i, /\.example\.org$/, 8080],
+                ['www.example.org', 8080, '/filename.html'],
+                true
+            ],
+            [
+                [/name\.html$/i, /\.example\.org$/, 8080],
+                ['lala.example.org', 8080, '/filenAme.html'],
+                true
+            ],
+            [
+                [/name\.html$/i, /\.example\.org$/, 8080],
+                ['wrong.org', 8080, '/filenAme.html'],
+                false
+            ],
+
+            [   // 25
+                [/name\.html$/i, /\.example\.org$/, /^88*$/],
+                ['www.example.org', 8, '/filenAme.html'],
+                true
+            ],
+            [
+                [/name\.html$/i, /\.example\.org$/, /^88*$/],
+                ['.example.org', 8888, '/filenAme.html'],
+                true
+            ]
+        ];
+        for (var i = 0; i < cases.length; ++i) {
+            it('should add a single controller controller [Case ' + i + ']',
+            (function(ctrlConstrParams, getCtrlParams, result) {
+                return function() {
+                    reqCtrl.removeAllControllers();
+
+                    var ctrl = new mvcfun.controller.Base(
+                        ctrlConstrParams[0],
+                        {
+                            host: ctrlConstrParams[1],
+                            port: ctrlConstrParams[2]
+                        }
+                    );
+                    reqCtrl.addController(ctrl);
+                    var ctrlResult = reqCtrl.getController(
+                        getCtrlParams[0],
+                        getCtrlParams[1],
+                        getCtrlParams[2]
+                    );
+
+                    if (result)
+                        ctrlResult.should.equal(ctrl);
+                    else
+                        (ctrlResult === null).should.be.true;
+                }
+            })(cases[i][0], cases[i][1], cases[i][2]));
+       }
 
     });
 
     //
     // Tests request.Controller.removeController
     //
-    describe('#removeController', function() {
+/*    describe('#removeController', function() {
         it(
             'should remove a controller by string filename',
             function() {
@@ -97,7 +246,7 @@ describe('request.Controller', function() {
                 reqCtrl.removeController(/lkas/).should.be.false;
             }
         );
-    });
+    });*/
 
     //
     // Tests request.Controller.run
@@ -122,38 +271,8 @@ describe('request.Controller', function() {
             };
 
             reqCtrl.addController(myCtrl);
-            reqCtrl.run(resp, '/x.file');
+            reqCtrl.run(resp, myCtrl);
         });
-        it('should output 404 if controller does not exist on run',
-            function(done) {
-                var resp = new http.ServerResponse({'GET': 'GET'});
-
-                resp.end = function(content) {
-                    this.should.have.status(
-                        mvcfun.http.StatusCodes.NOT_FOUND
-                    );
-                    done();
-                };
-
-                reqCtrl.run(resp, '/y.file');
-            }
-        );
-        it('should call the last added controller on regexp overlap',
-            function(done) {
-                var ctrl1 = new mvcfun.controller.Base(/a/);
-                ctrl1.run = function(resp, path) {
-                    done('Must not be called!');
-                };
-                var ctrl2 = new mvcfun.controller.Base(/ab/);
-                ctrl2.run = function(resp, path) {
-                    done();
-                };
-                var resp = new http.ServerResponse({'GET': 'GET'});
-                reqCtrl.addController(ctrl1);
-                reqCtrl.addController(ctrl2);
-                reqCtrl.run(resp, '/ababaa');
-            }
-        );
         it('should emit error if controller throws', function(done) {
             var myCtrl = new mvcfun.controller.Base('/z.file');
             myCtrl.run = function(resp, path) {
@@ -172,8 +291,7 @@ describe('request.Controller', function() {
                 done();
             });
             reqCtrl.addController(myCtrl);
-            reqCtrl.run(new Resp(), '/z.file');
-            reqCtrl.removeController('/z.file').should.be.true;
+            reqCtrl.run(new Resp(), myCtrl);
         });
     });
 });
