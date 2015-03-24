@@ -10,8 +10,16 @@ var mvcfun = require('../../../'),
     should = require('should');
 
 describe('request.Controller', function() {
+    var respMan = new mvcfun.response.Manager();
     var reqMan  = new mvcfun.request.Manager(
-        new mvcfun.response.Manager(),
+        {
+            'text/html'        : respMan,
+            'text/plain'       : respMan,
+            'application/json' : respMan
+        },
+        function() {
+            return respMan;
+        },
         new mvcfun.request.Controller()
     );
     var reqCtrl = reqMan.requestController;
