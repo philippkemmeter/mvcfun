@@ -10,6 +10,8 @@ var mvcfun = require('../../../'),
     fs     = require('fs'),
     should = require('should');
 
+require('should-http');
+
 describe('controller.Swig', function() {
     var tpldir = os.tmpdir();
 
