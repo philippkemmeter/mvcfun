@@ -15,9 +15,14 @@ describe('http.Server', function() {
 
             server.requestManager.should.exist;
             server.responseManager.should.exist;
+            server.responseManagers['text/html'].should.exist;
+            server.responseManagers['text/plain'].should.exist;
+            server.responseManagers['application/json'].should.exist;
+
             server.requestManager.requestController.should.exist;
             server.allowedMethods.should.equal(mvcfun.http.Server.METHODS);
             server.reqBodyMaxLength.should.equal(1000);
+            server.defaultContentType.should.equal('text/html');
             server.httpServer.should.exist;
         });
         it('should consider the options', function() {
@@ -29,22 +34,33 @@ describe('http.Server', function() {
             var MyRespMan = function() {};
             util.inherits(MyRespMan, mvcfun.response.Manager);
 
-            var myRespMan = new MyRespMan();
-            var myReqMan  = new MyReqMan();
+            var myReqMan       = new MyReqMan();
+            var myRespManHTML  = new MyRespMan();
+            var myRespManPlain = new MyRespMan();
+            var myRespManJson  = new MyRespMan();
 
             var server = new mvcfun.http.Server({
-                allowedMethods:   ['GET'],
-                reqBodyMaxLength: 99,
-                logLevel:         1,
-                requestManager:   myReqMan,
-                responseManager:  myRespMan
+                allowedMethods:      ['GET'],
+                reqBodyMaxLength:    99,
+                logLevel:            1,
+                responseManagers:     {
+                    'text/html':        myRespManHTML,
+                    'text/plain':       myRespManPlain,
+                    'application/json': myRespManJson
+                },
+                requestManager:     myReqMan,
+                defaultContentType: 'application/json'
             });
 
             server.allowedMethods.should.eql(['GET']);
             server.reqBodyMaxLength.should.equal(99);
             server.logLevel.should.equal(1);
             server.requestManager.should.equal(myReqMan);
-            server.responseManager.should.equal(myRespMan);
+            server.responseManager.should.equal(myRespManJson);
+            server.responseManagers['application/json'].should.equal(myRespManJson);
+            server.responseManagers['text/html'].should.equal(myRespManHTML);
+            server.responseManagers['text/plain'].should.equal(myRespManPlain);
+            server.defaultContentType.should.equal('application/json');
         });
     });
     describe('#main', function() {
@@ -85,7 +101,9 @@ describe('http.Server', function() {
 
                         var server = new mvcfun.http.Server({
                             allowedMethods:  ['GET', 'POST'],
-                            responseManager: myRespMan
+                            responseManagers: {
+                                'text/html': myRespMan
+                            }
                         });
 
                         var req = new http.IncomingMessage();

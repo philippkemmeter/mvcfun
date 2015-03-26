@@ -35,7 +35,13 @@ describe('request.Manager', function() {
                 );
 
                 var reqMan  = new mvcfun.request.Manager(
-                    respMan, reqCtrl
+                    {
+                        'text/html': respMan,
+                        'text/plain': respMan,
+                        'application/json': respMan
+                    },
+                    function() { return respMan; },
+                    reqCtrl
                 );
                 reqMan._requestData = {host: 'example.org', port:80};
                 reqMan.run(httpresp, filename);
@@ -63,7 +69,13 @@ describe('request.Manager', function() {
                 };
 
                 var reqMan = new mvcfun.request.Manager(
-                    respMan, reqCtrl
+                    {
+                        'text/html': respMan,
+                        'text/plain': respMan,
+                        'application/json': respMan
+                    },
+                    function() { return respMan; },
+                    reqCtrl
                 );
                 reqMan._requestData = {host: 'example.org', port:80};
                 reqMan.run(httpresp, 'not_registerd_file');
