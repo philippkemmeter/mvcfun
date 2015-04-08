@@ -31,7 +31,7 @@ describe('controller.Rest', function() {
     // Tests controller.Forbidden.run
     //
     describe('#run', function() {
-        var methods = mvcfun.http.server.METHODS;
+        var methods = mvcfun.http.Server.METHODS;
         for (var i = 0; i < methods; ++i) {
             it('should return method not allowed [' + methods[i] + ']',
                 (function(method) {
