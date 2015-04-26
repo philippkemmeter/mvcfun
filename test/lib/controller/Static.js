@@ -121,7 +121,7 @@ describe('controller.Static', function() {
                                 reqMan._requestData = {
                                     path: '/1',
                                     method: method
-                                }
+                                };
                                 reqCtrl.run(resp, ctrl);
                             });
                         }
